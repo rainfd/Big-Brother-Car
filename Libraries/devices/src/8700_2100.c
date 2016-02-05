@@ -4,9 +4,16 @@
 #include "math.h"
 #include "uart.h"
 
+/*
+    模块平放 前后：pitch 左右：yaw
+       竖放 前后：pitch 左右：roll
+*/
+
 #define ALPHA_G 0.0078125
 #define ALPHA_A 0.000244
 #define PI      3.141592
+
+
 
 uint32_t instance;
 
@@ -38,19 +45,37 @@ void I2CData_Read(uint8_t chipAddr, int16_t *data)
     
 }
 
-void GyroAccel_Read(int16_t *data)
+void GyroAccel_Raw(int16_t *data)
 {
     int16_t gyro[3], accel[3];
     
     I2CData_Read(Fxas21oo, gyro);
     I2CData_Read(Fxod8700, accel);
     
+    // gyro[0] x gyro[1] y gyro[2] z
+    // accel[0] x accel[1] y accel[2] z
     data[0] = gyro[0];
     data[1] = gyro[1];
     data[2] = gyro[2];
     data[3] = accel[0];
     data[4] = accel[1];
     data[5] = accel[2];
+}
+
+void GyroAccel_Read(float *data)
+{
+    int16_t raw[6];
+    
+    GyroAccel_Raw(raw);
+    
+    data[0] = raw[0] * ALPHA_G;
+    data[1] = raw[1] * ALPHA_G;
+    data[2] = raw[2] * ALPHA_G;
+    
+    data[3] = raw[3] * ALPHA_A;
+    data[4] = raw[4] * ALPHA_A;
+    data[5] = raw[5] * ALPHA_A;
+    
 }
 
 //GyroAccel GyroAccel_Filter(const int16_t *gyro, const int16_t *accel)

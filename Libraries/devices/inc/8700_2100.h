@@ -45,7 +45,7 @@ typedef struct {
 //uint32_t instance;
 
 void GyroAccel_Init(void);
-void GyroAccel_Read(int16_t *data);
+void GyroAccel_Read(float *data);
 
 //Data GyroAccel_Pro(void);
 
