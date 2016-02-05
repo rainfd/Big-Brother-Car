@@ -5,7 +5,6 @@
 
 #include "DataScope_DP.h"
 #include "common.h"
-#include "mma7361.h"
 #include "uart.h"
 
 float scope_buf[10] = {0};        // ÐéÄâÊ¾²¨Æ÷Êý¾Ý
