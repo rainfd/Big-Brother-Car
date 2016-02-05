@@ -68,7 +68,7 @@ float Kalman_Filter(float Accel,float Gyro)
 float Complementary_Filter(float angle_m, float gyro_m)
 {
     
-    angle_com = (angle_com + gyro_m * 0.005) * (1 - K) + K * angle_m;
+    angle_com = (angle_com + gyro_m * dt) * (1 - K) + K * angle_m;
     
     return angle_com;
 }
@@ -83,3 +83,12 @@ float Complementary_Filter2(float angle_m, float gyro_m)
     
     return angle_com2;
 }
+/*
+float Complementary_Filter(float angle_m, float gyro_m)
+{
+    
+    angle_com = (angle_com + gyro_m * 0.005) * (1 - K) + K * angle_m;
+    
+    return angle_com;
+}
+*/
