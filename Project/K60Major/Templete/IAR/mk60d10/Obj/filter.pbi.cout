@@ -1,20 +1,20 @@
-"E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\src\filter.c"
+"E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\src\filter.c"
 -std=c99
 -ferror-limit=100
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\drivers\K\inc
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\drivers\K\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\startup\CoreSupport
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\startup\CoreSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport\IAR-ARM
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport\IAR-ARM
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\src
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\src
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\devices\inc
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\devices\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\inc
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\IAR\..\inc
 -I
 D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
 -I
@@ -28,11 +28,11 @@ E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\startup\Dev
 -I
 E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\startup\DeviceSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\src
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\src
 -I
 E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\devices\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\inc
+E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\K60Major\Templete\inc
 -DMK60D10=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
@@ -226,8 +226,8 @@ E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593924
--D__DATE__="Dec 14 2015"
--D__TIME__="16:16:48"
+-D__DATE__="Feb  6 2016"
+-D__TIME__="01:14:55"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1

@@ -50,28 +50,30 @@ int main(void)
 
 //        printf("[CH%d]:%4dHz [CH%d]:%4dHz\r\n", 0, ChlValue[0], 1, ChlValue[1]);
 
-
-#if 0
-        fin = GyroAccel_Pro();
-        
-        scope_buf[0] = fin.gyro_x;
-        scope_buf[1] = fin.gyro_y;
-        scope_buf[2] = fin.gyro_z;
-        scope_buf[3] = fin.accel_x;
-        scope_buf[4] = fin.accel_y;
-        scope_buf[5] = fin.accel_z;
-        scope_buf[6] = fin.pitch;
-        scope_buf[7] = fin.roll;
-        scope_buf[8] = fin.yaw;
-        
         DataScope(uart_instance, scope_buf);
-#elseif 0
-        int16_t accle[3];
-        GyroAccel_Read(Fxod8700, accle);
+#if 0
+    float gyroaccel[6];
+    
+    GyroAccel_Read(gyroaccel);
         
-        printf("%d %d %d", accle[0], accle[1], accle[2]);
-        DelayMs(100);
+    scope_buf[0] = gyroaccel[0];
+    scope_buf[1] = gyroaccel[1];
+    scope_buf[2] = gyroaccel[2];
+    scope_buf[3] = gyroaccel[3];
+    scope_buf[4] = gyroaccel[4];
+    scope_buf[5] = gyroaccel[5];
+ 
+//    scope_buf[6] = yi;
+ 
+    scope_buf[7] = Kalman_Filter(gyroaccel[5], gyroaccel[1]);	
+    scope_buf[8] = Complementary_Filter(gyroaccel[5], gyroaccel[1]);
+    scope_buf[9] = Complementary_Filter2(gyroaccel[5], gyroaccel[1]);
+        
+    
+    DataScope(uart_instance, scope_buf);
+
 #endif
+
     }
 }
 
