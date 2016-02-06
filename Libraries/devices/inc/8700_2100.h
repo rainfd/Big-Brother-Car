@@ -14,37 +14,38 @@
 #define OUT_Z_LSB_REG         0x06
 
 #include "common.h"
-
-typedef struct {
-    double gyro_x;
-    double gyro_y;
-    double gyro_z;
-    double accel_x;
-    double accel_y;
-    double accel_z;
-} GyroAccel;
-
-typedef struct {
-    double pitch;
-    double roll;
-    double yaw;
-} Rotation;
-
-typedef struct {
-    double gyro_x;
-    double gyro_y;
-    double gyro_z;
-    double accel_x;
-    double accel_y;
-    double accel_z;
-    double pitch;
-    double roll;
-    double yaw;
-} Data;
+//
+//typedef struct {
+//    double gyro_x;
+//    double gyro_y;
+//    double gyro_z;
+//    double accel_x;
+//    double accel_y;
+//    double accel_z;
+//} GyroAccel;
+//
+//typedef struct {
+//    double pitch;
+//    double roll;
+//    double yaw;
+//} Rotation;
+//
+//typedef struct {
+//    double gyro_x;
+//    double gyro_y;
+//    double gyro_z;
+//    double accel_x;
+//    double accel_y;
+//    double accel_z;
+//    double pitch;
+//    double roll;
+//    double yaw;
+//} Data;
 
 //uint32_t instance;
 
 void GyroAccel_Init(void);
+void GyroAccel_Raw(int16_t *data);
 void GyroAccel_Read(float *data);
 
 //Data GyroAccel_Pro(void);

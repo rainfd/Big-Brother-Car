@@ -93,22 +93,22 @@ void GyroAccel_Read(float *data)
 //    return dps;
 //}
 
-Rotation Accel_Cal(const GyroAccel raw)
-{
-    double x, y, z;
-    Rotation dps;
-    
-    x = raw.accel_x;
-    y = raw.accel_y;
-    z = raw.accel_z;
-    
-    dps.pitch = (atan2(x, sqrt(y*y + z*z)) * 180.0) / PI;
-    dps.roll = (atan2(y, sqrt(x*x + z*z)) * 180.0) / PI;
-    dps.yaw = (atan2(z, sqrt(x*x + y*y)) * 180.0) / PI;
-                
-    
-    return dps;
-}
+//Rotation Accel_Cal(const GyroAccel raw)
+//{
+//    double x, y, z;
+//    Rotation dps;
+//    
+//    x = raw.accel_x;
+//    y = raw.accel_y;
+//    z = raw.accel_z;
+//    
+//    dps.pitch = (atan2(x, sqrt(y*y + z*z)) * 180.0) / PI;
+//    dps.roll = (atan2(y, sqrt(x*x + z*z)) * 180.0) / PI;
+//    dps.yaw = (atan2(z, sqrt(x*x + y*y)) * 180.0) / PI;
+//                
+//    
+//    return dps;
+//}
 
 //Fxas21oo
 //Fxod8700
