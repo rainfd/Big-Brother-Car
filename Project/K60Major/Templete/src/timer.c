@@ -8,6 +8,7 @@
 #include "8700_2100.h"
 
 #include "filter.h"
+#include "calculate.h"
 
 void Timer_Init(void)
 {       
@@ -27,7 +28,7 @@ void PIT_ISR(void)
 //            accel_x = gyroaccel[3], accel_y = gyroaccel[4], accel_z = gyroaccel[5];
     
     
-#if 1
+#if 0
 
     float gyroaccel[6];
     
@@ -40,11 +41,33 @@ void PIT_ISR(void)
     scope_buf[4] = gyroaccel[4];
     scope_buf[5] = gyroaccel[5];
  
-//    scope_buf[6] = yi;
+    scope_buf[6] = ChlValue[0];
+    scope_buf[7] = ChlValue[1];
+    
  
-    scope_buf[7] = Kalman_Filter(gyroaccel[5], gyroaccel[1]);	
-    scope_buf[8] = Complementary_Filter(gyroaccel[5], gyroaccel[1]);
-    scope_buf[9] = Complementary_Filter2(gyroaccel[5], gyroaccel[1]);
+    scope_buf[8] = Kalman_Filter(gyroaccel[5], gyroaccel[1]);	
+    scope_buf[9] = Complementary_Filter(gyroaccel[5], gyroaccel[1]);
+//    scope_buf[9] = Complementary_Filter2(gyroaccel[5], gyroaccel[1]);
+    
+#elif 1
+    
+    int16_t raw[6];
+
+    GyroAccel_Raw(raw);
+    
+    int16_t angle, gyro, turn;
+    float result;
+    
+    angle = raw[5];
+    gyro = raw[1];
+    turn = raw[0];
+    
+    result = AngelCal(angle, gyro, 1);
+    
+//    scope_buf[0] = (float)angle;
+//    scope_buf[1] = (float)gyro;
+//    
+//    scope_buf[9] = result;
     
 #endif
 
