@@ -8,6 +8,8 @@
 #include "dma.h"
 #include "gpio.h"
 #include "common.h"
+
+#include "counter.h"
     
 
 static const uint32_t DMA_PORT_TriggerSourceTable[] = 
@@ -57,7 +59,7 @@ static void DMA_PulseCountInit(uint32_t dmaChl, uint32_t instance, uint32_t pinI
     DMA_EnableRequest(dmaChl);
 }
 
-static uint32_t ChlValue[2];
+//static uint32_t ChlValue[2];
 
 //中断函数处理
 static void PIT_COUNT_ISR(void)
