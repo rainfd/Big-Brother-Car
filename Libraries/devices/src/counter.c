@@ -59,7 +59,7 @@ static void DMA_PulseCountInit(uint32_t dmaChl, uint32_t instance, uint32_t pinI
     DMA_EnableRequest(dmaChl);
 }
 
-//static uint32_t ChlValue[2];
+uint32_t ChlValue[2];
 
 //中断函数处理
 static void PIT_COUNT_ISR(void)
@@ -89,4 +89,5 @@ void CounterInit(void)
     PIT_QuickInit(HW_PIT_CH3, 100 * 1000);
     PIT_CallbackInstall(HW_PIT_CH3, PIT_COUNT_ISR);
     PIT_ITDMAConfig(HW_PIT_CH3, kPIT_IT_TOF, true);
+    
 }
