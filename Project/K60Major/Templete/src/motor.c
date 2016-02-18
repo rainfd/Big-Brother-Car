@@ -4,39 +4,75 @@
 #include "common.h"
 #include "gpio.h"
 
+#define ENA PAout(11)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+#define ENB PAout(14)
+#define IN1 PAout(9)
+#define IN2 PAout(12)
+#define IN3 PAout(10)
+#define IN4 PAout(13)
+
 void PWM_Init(int16_t duty)
 {
-    /* 0-10000 对应 0-100% */
-    FTM_PWM_QuickInit(FTM1_CH1_PA09, kPWM_EdgeAligned, duty);
-    FTM_PWM_QuickInit(FTM2_CH0_PA10, kPWM_EdgeAligned, duty);
-
     GPIO_QuickInit(HW_GPIOA, 11, kGPIO_Mode_OPP);   // ENA
     GPIO_QuickInit(HW_GPIOA, 12, kGPIO_Mode_OPP);   // IN2
     GPIO_QuickInit(HW_GPIOA, 13, kGPIO_Mode_OPP);   // IN4
     GPIO_QuickInit(HW_GPIOA, 14, kGPIO_Mode_OPP);   // ENB
     
-    PAout(12) = 0;
-    PAout(13) = 0;
+    IN2 = 0;
+    IN4 = 0;
     
     PWM_Enable();
+    
+#if 1
+    /* 0-10000 对应 0-100% */
+    FTM_PWM_QuickInit(FTM1_CH1_PA09, kPWM_EdgeAligned, duty);
+    FTM_PWM_QuickInit(FTM2_CH0_PA10, kPWM_EdgeAligned, duty);
+#else
+    GPIO_QuickInit(HW_GPIOA,  9, kGPIO_Mode_OPP);
+    GPIO_QuickInit(HW_GPIOA, 10, kGPIO_Mode_OPP);
+    IN1 = 1;
+    IN3 = 1;
+#endif
 }
 
 void PWM_Out(int16_t left, int16_t right)
 {
+    PWM_Enable();
+    
+    //  forward back
+    if (left < 0) {
+        left = -left;
+        IN4 = 1;
+    } else {
+        IN2 = 0;
+    }
+    
+    if (right < 0) {
+        right = -right;
+        IN4 = 1;
+    } else { 
+        IN4 = 0;
+    }
+    
+    if (left > 10000)
+        left = 10000;
+    if (right > 10000)
+        right = 10000;
+        
     FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH1, left);
     FTM_PWM_ChangeDuty(HW_FTM2, HW_FTM_CH0, right);
 }
 
 void PWM_Enable(void)
 {
-    PAout(11) = 1;
-    PAout(14) = 1;
+    ENA = 1;
+    ENB = 1;
 }
 
 void PWM_Disable(void)
 {
-    PAout(11) = 0;
-    PAout(14) = 0;
+    ENA = 0;
+    ENB = 0;
 }
 
 /* 可用的FTM通道有: */
