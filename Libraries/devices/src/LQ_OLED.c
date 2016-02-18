@@ -6,6 +6,9 @@
 #include "LQ_OLED.h"
 #include "stdio.h"
 
+#include "ctype.h"
+#include "math.h"
+
 
 
 
@@ -682,9 +685,25 @@ void LCD_Print(byte x, byte y, byte ch[])
 //Êä³öÊý×Ö
 void LCD_Print_Num(byte x, byte y, int num, uint8_t len)
 {
-    char str[len];
+    char str[len], data[len];
+    
+    int i = len;
+    
+    while (--i) { 
+        str[i] = 0; 
+    }
+    
     sprintf(str, "%d", num);
-    LCD_Print(x, y, str);
+    
+    i = 0;
+    for(i = 0; i < len; i++) {
+        if (str[i] != '\0')
+            data[i] = str[i];
+        else
+            data[i] = ' ';
+    }
+
+    LCD_Print(x, y, data);
 }
 
 //==============================================================
