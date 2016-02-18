@@ -2,7 +2,7 @@
 
 
 // 一,二阶互补滤波参数 对加速度计取值的权重
-const float K = 0.02;
+const float K = 0.1;//0.02;
 const float K1 = 0.05; 
 const float K2 = 0.2;
 	
