@@ -9,6 +9,7 @@
 
 #include "filter.h"
 #include "calculate.h"
+#include "counter.h"
 
 void Timer_Init(void)
 {       
@@ -50,25 +51,54 @@ void PIT_ISR(void)
 //    scope_buf[9] = Complementary_Filter2(gyroaccel[5], gyroaccel[1]);
     
 #elif 1
-    
-    int16_t raw[6];
 
+// counter 
+    scope_buf[8] = ChlValue[0];
+    scope_buf[9] = ChlValue[1];
+    
+// gyro accel
+    int16_t raw[6];
+    int16_t angle_raw, gyro_raw, turn_raw;
+    float angle, gyro, turn;
+    float balance[2];
+    float angle_balance, gyro_balance;
+    
     GyroAccel_Raw(raw);
     
-    int16_t angle, gyro, turn;
-    float result;
+    /* raw 0-2 gyro 3-5 accel */
+    angle_raw = raw[5];
+    gyro_raw = raw[1];
+    turn_raw = raw[0];
+    angle = AngleCal(angle_raw, 2);
+    gyro = AngleCal(gyro_raw, 1);
+    turn = AngleCal(turn_raw, 1);
     
-    angle = raw[5];
-    gyro = raw[1];
-    turn = raw[0];
+
+    /* 用原始数据直接滤波 */
+//    angle_balance = AngleFilter(angle_raw, gyro_raw, 1);
     
-    result = AngelCal(angle, gyro, 1);
+    angle_balance = AngleFilter(angle, gyro, 2); // 1 Kalman 2 Complementary
+    gyro_balance = gyro;
     
-//    scope_buf[0] = (float)angle;
-//    scope_buf[1] = (float)gyro;
+    /* in calculate.c */
+    //    scope_buf[7] = angle_balance;
+    //    scope_buf[8] = gyro_balance;
+    //    scope_buf[9] = result;
+    
+//    static float integration = 0;
 //    
-//    scope_buf[9] = result;
+//    integration = integration + 0.005 * gyro;
+//    
+//    scope_buf[6] = integration;
+        
+    
+// PID
+    int balance_pwm;
+    
+    balance_pwm = Balance_PID(angle_balance, gyro_balance);
+    
+    scope_buf[3] = balance_pwm;
+
     
 #endif
-
 }
