@@ -19,8 +19,14 @@
 
 uint32_t uart_instance;
 
+
+int32_t i = 0;
+
+//#define COUNTER
+
 // Turn = Gyro_y;
 // Balance = Gyro_x, accel_y
+
     
 int main(void)
 {   
@@ -31,6 +37,7 @@ int main(void)
     uart_instance = UART_QuickInit(UART4_RX_PE25_TX_PE24, 115200);
     
     LCD_Init();
+    
     LCD_Print(20, 0, "Big Brother");
     
 //    LED_ON;  // 查看初始化时间
@@ -41,18 +48,22 @@ int main(void)
     
     CounterInit();
     Timer_Init();
-    PWM_Init(5000);
+    PWM_Init(0);
+    PWM_Out(0, 0);
     
     printf("Init OK");
     
     while(1)
     {
-
+        
 //        printf("[CH%d]:%4dHz [CH%d]:%4dHz\r\n", 0, ChlValue[0], 1, ChlValue[1]);
+//        DelayMs(200);
+
+        
         LCD_Print(0, 2, "L: ");
-        LCD_Print_Num(20, 2, ChlValue[0], 5);
+        LCD_Print_Num(20, 2, ChlValue[0], 6);
         LCD_Print(0, 4, "R: ");
-        LCD_Print_Num(20, 4, ChlValue[1], 5);
+        LCD_Print_Num(20, 4, ChlValue[1], 6);
         
         
         DataScope(uart_instance, scope_buf);
