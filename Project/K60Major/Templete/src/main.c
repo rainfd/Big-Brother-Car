@@ -27,7 +27,13 @@ int32_t i = 0;
 // Turn = Gyro_y;
 // Balance = Gyro_x, accel_y
 
-    
+static void UART_RX_ISR(uint16_t byteReceived)
+{
+    //PWM_Out(byteReceived, 0, byteReceived, 0);
+    /* 将接收到的数据发送回去 */
+    UART_WriteByte(HW_UART4, byteReceived);
+}
+
 int main(void)
 {   
     DelayInit();
@@ -35,6 +41,10 @@ int main(void)
     GPIO_QuickInit(HW_GPIOE, 26, kGPIO_Mode_OPP);   
 
     uart_instance = UART_QuickInit(UART4_RX_PE25_TX_PE24, 115200);
+    /*  配置UART 中断配置 打开接收中断 安装中断回调函数 */
+    UART_CallbackRxInstall(HW_UART4, UART_RX_ISR);
+    /* 打开串口接收中断功能 IT 就是中断的意思*/
+    UART_ITDMAConfig(HW_UART4, kUART_IT_Rx, true);
     
     LCD_Init();
     
@@ -49,9 +59,11 @@ int main(void)
     CounterInit();
     Timer_Init();
     PWM_Init(0);
-    PWM_Out(0, 0);
+    PWM_Out(5000,0,5000,0);
     
     printf("Init OK");
+
+    
     
     while(1)
     {
@@ -59,14 +71,14 @@ int main(void)
 //        printf("[CH%d]:%4dHz [CH%d]:%4dHz\r\n", 0, ChlValue[0], 1, ChlValue[1]);
 //        DelayMs(200);
 
-        
         LCD_Print(0, 2, "L: ");
         LCD_Print_Num(20, 2, ChlValue[0], 6);
         LCD_Print(0, 4, "R: ");
         LCD_Print_Num(20, 4, ChlValue[1], 6);
         
+        //PWM_Out(5000, 0, 5000, 0);
         
-        DataScope(uart_instance, scope_buf);
+        //DataScope(uart_instance, scope_buf);
         
 #if 0
     float gyroaccel[6];
@@ -93,5 +105,3 @@ int main(void)
 
     }
 }
-
-
