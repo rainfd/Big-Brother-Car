@@ -4,75 +4,58 @@
 #include "common.h"
 #include "gpio.h"
 
-#define ENA PAout(11)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-#define ENB PAout(14)
-#define IN1 PAout(9)
-#define IN2 PAout(12)
-#define IN3 PAout(10)
-#define IN4 PAout(13)
+#define MAX_DUTY 10000
+#define MIN_DUTY 0
+#define LIM_DUTY 10000
 
-void PWM_Init(int16_t duty)
-{
-    GPIO_QuickInit(HW_GPIOA, 11, kGPIO_Mode_OPP);   // ENA
-    GPIO_QuickInit(HW_GPIOA, 12, kGPIO_Mode_OPP);   // IN2
-    GPIO_QuickInit(HW_GPIOA, 13, kGPIO_Mode_OPP);   // IN4
-    GPIO_QuickInit(HW_GPIOA, 14, kGPIO_Mode_OPP);   // ENB
+// PA8 9 10 11
+#define IN1 PAout(8)
+#define IN2 PAout(9)
+#define IN3 PAout(10)
+#define IN4 PAout(11)
+
+void PWM_Init(int duty)
+{   
+    //PWM_Lim(duty, 0, 0, 0);
+    if (duty > MAX_DUTY)
+        duty = LIM_DUTY;
     
-    IN2 = 0;
-    IN4 = 0;
-    
-    PWM_Enable();
-    
-#if 1
     /* 0-10000 对应 0-100% */
+    FTM_PWM_QuickInit(FTM1_CH0_PA08, kPWM_EdgeAligned, duty);
     FTM_PWM_QuickInit(FTM1_CH1_PA09, kPWM_EdgeAligned, duty);
     FTM_PWM_QuickInit(FTM2_CH0_PA10, kPWM_EdgeAligned, duty);
-#else
-    GPIO_QuickInit(HW_GPIOA,  9, kGPIO_Mode_OPP);
-    GPIO_QuickInit(HW_GPIOA, 10, kGPIO_Mode_OPP);
-    IN1 = 1;
-    IN3 = 1;
-#endif
+    FTM_PWM_QuickInit(FTM2_CH1_PA11, kPWM_EdgeAligned, duty);
 }
 
-void PWM_Out(int16_t left, int16_t right)
+void PWM_Limit(int* l1, int* l2, int* r1, int* r2)
 {
-    PWM_Enable();
+    if (*l1 > MAX_DUTY)
+        *l1 = LIM_DUTY;
+    if (*l2 > MAX_DUTY)
+        *l2 = LIM_DUTY;
+    if (*r1 > MAX_DUTY)
+        *r1 = LIM_DUTY;
+    if (*r2 > MAX_DUTY)
+        *r2 = LIM_DUTY;
     
-    //  forward back
-    if (left < 0) {
-        left = -left;
-        IN4 = 1;
-    } else {
-        IN2 = 0;
-    }
-    
-    if (right < 0) {
-        right = -right;
-        IN4 = 1;
-    } else { 
-        IN4 = 0;
-    }
-    
-    if (left > 10000)
-        left = 10000;
-    if (right > 10000)
-        right = 10000;
-        
-    FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH1, left);
-    FTM_PWM_ChangeDuty(HW_FTM2, HW_FTM_CH0, right);
+    if (*l1 < MIN_DUTY)
+        *l1 = MIN_DUTY;
+    if (*l2 < MIN_DUTY)
+        *l2 = MIN_DUTY;
+    if (*r1 < MIN_DUTY)
+        *r1 = MIN_DUTY;
+    if (*r2 < MIN_DUTY)
+        *r2 = MIN_DUTY;
 }
 
-void PWM_Enable(void)
-{
-    ENA = 1;
-    ENB = 1;
-}
-
-void PWM_Disable(void)
-{
-    ENA = 0;
-    ENB = 0;
+void PWM_Out(int l1, int l2, int r1, int r2)
+{       
+    PWM_Limit(&l1, &l2, &r1, &r2);
+    
+    FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH0, l1);
+    FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH1, l2);
+    FTM_PWM_ChangeDuty(HW_FTM2, HW_FTM_CH0, r1);
+    FTM_PWM_ChangeDuty(HW_FTM2, HW_FTM_CH1, r2);
 }
 
 /* 可用的FTM通道有: */
