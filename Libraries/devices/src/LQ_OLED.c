@@ -6,11 +6,6 @@
 #include "LQ_OLED.h"
 #include "stdio.h"
 
-#include "ctype.h"
-#include "math.h"
-
-
-
 
 #define XLevelL		0x00
 #define XLevelH		0x10
@@ -682,28 +677,44 @@ void LCD_Print(byte x, byte y, byte ch[])
 		}
 	}
 }
+// ³Ë·½
+int LCD_Pow(byte m, byte n)
+{
+    int result = 1;
+    
+    while (n--)
+        result *= m;
+    
+    return result;
+}
 //Êä³öÊý×Ö
 void LCD_Print_Num(byte x, byte y, int num, uint8_t len)
 {
-    char str[len], data[len];
+    byte t, temp;
+    byte enshow = 0;
+    byte size = 16;
+    byte ch[] = " ";
+    int num_sign = num;
     
-    int i = len;
+    if (num < 0)
+        num = -num;
     
-    while (--i) { 
-        str[i] = 0; 
+    for (t = 0; t < len; t++) {
+        temp = (byte)((num / LCD_Pow(10,len-t-1)) % 10);
+        if (enshow==0 && t<(len-1)) {
+            if (temp == 0) {
+                LCD_Print(x+(size/2)*t, y, " ");
+                continue;
+            } else {
+                enshow = 1;
+            }
+        }
+        ch[0] = temp+'0';
+        LCD_Print(x+(size/2)*t, y, ch);
     }
     
-    sprintf(str, "%d", num);
-    
-    i = 0;
-    for(i = 0; i < len; i++) {
-        if (str[i] != '\0')
-            data[i] = str[i];
-        else
-            data[i] = ' ';
-    }
-
-    LCD_Print(x, y, data);
+    if (num_sign < 0)
+        LCD_Print(x, y, "-");
 }
 
 //==============================================================
