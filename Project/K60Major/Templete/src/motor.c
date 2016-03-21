@@ -4,6 +4,8 @@
 #include "common.h"
 #include "gpio.h"
 
+#define TEST 1
+
 #define MAX_DUTY 10000
 #define MIN_DUTY 0
 #define LIM_DUTY 10000
@@ -14,50 +16,67 @@
 #define IN3 PAout(10)
 #define IN4 PAout(11)
 
-void PWM_Init(int duty)
+void Motor_Init(int duty)
 {   
-    //PWM_Lim(duty, 0, 0, 0);
-    if (duty > MAX_DUTY)
-        duty = LIM_DUTY;
+    PWM_Limit(&duty);
     
+#if TEST
     /* 0-10000 对应 0-100% */
+    FTM_PWM_QuickInit(FTM0_CH3_PA06, kPWM_EdgeAligned, duty);
+    FTM_PWM_QuickInit(FTM0_CH4_PA07, kPWM_EdgeAligned, duty);
+    FTM_PWM_QuickInit(FTM1_CH0_PA08, kPWM_EdgeAligned, duty);
+    FTM_PWM_QuickInit(FTM1_CH1_PA09, kPWM_EdgeAligned, duty);
+#else
     FTM_PWM_QuickInit(FTM1_CH0_PA08, kPWM_EdgeAligned, duty);
     FTM_PWM_QuickInit(FTM1_CH1_PA09, kPWM_EdgeAligned, duty);
     FTM_PWM_QuickInit(FTM2_CH0_PA10, kPWM_EdgeAligned, duty);
     FTM_PWM_QuickInit(FTM2_CH1_PA11, kPWM_EdgeAligned, duty);
+#endif
 }
 
-void PWM_Limit(int* l1, int* l2, int* r1, int* r2)
+void PWM_Limit(int* pwm)
 {
-    if (*l1 > MAX_DUTY)
-        *l1 = LIM_DUTY;
-    if (*l2 > MAX_DUTY)
-        *l2 = LIM_DUTY;
-    if (*r1 > MAX_DUTY)
-        *r1 = LIM_DUTY;
-    if (*r2 > MAX_DUTY)
-        *r2 = LIM_DUTY;
-    
-    if (*l1 < MIN_DUTY)
-        *l1 = MIN_DUTY;
-    if (*l2 < MIN_DUTY)
-        *l2 = MIN_DUTY;
-    if (*r1 < MIN_DUTY)
-        *r1 = MIN_DUTY;
-    if (*r2 < MIN_DUTY)
-        *r2 = MIN_DUTY;
+    if (*pwm > MAX_DUTY)
+        *pwm = LIM_DUTY;
+
 }
 
 void PWM_Out(int l1, int l2, int r1, int r2)
 {       
-    PWM_Limit(&l1, &l2, &r1, &r2);
-    
+    PWM_Limit(&l1);
+    PWM_Limit(&l2);
+    PWM_Limit(&r1);
+    PWM_Limit(&r2);
+#if TEST
+    FTM_PWM_ChangeDuty(HW_FTM0, HW_FTM_CH3, r1);
+    FTM_PWM_ChangeDuty(HW_FTM0, HW_FTM_CH4, r2);
+    FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH0, l1);
+    FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH1, l2);
+#else
     FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH0, l1);
     FTM_PWM_ChangeDuty(HW_FTM1, HW_FTM_CH1, l2);
     FTM_PWM_ChangeDuty(HW_FTM2, HW_FTM_CH0, r1);
     FTM_PWM_ChangeDuty(HW_FTM2, HW_FTM_CH1, r2);
+#endif
 }
 
+void Motor_Out(int left, int right)
+{
+    int l1 = 0, l2 = 0;
+    int r1 = 0, r2 = 0;
+    
+    if (left > 0)
+        l1 = left;
+    else
+        l2 = -left;
+    
+    if (right > 0)
+        r1 = right;
+    else
+        r2 = -right;
+    
+    PWM_Out(l1, l2, r1, r2);
+}
 /* 可用的FTM通道有: */
 /*
  FTM0_CH4_PB12   // ftm0 模块 4通道 PB12引脚
