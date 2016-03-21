@@ -176,9 +176,6 @@
       <name>$PROJ_DIR$\..\..\..\..\Libraries\devices\src\8700_2100.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\..\..\..\..\Libraries\devices\src\counter.c</name>
-    </file>
-    <file>
       <name>$PROJ_DIR$\..\..\..\..\Libraries\devices\src\DataScope_DP.C</name>
     </file>
     <file>
@@ -281,10 +278,22 @@
   <group>
     <name>user</name>
     <file>
+      <name>$PROJ_DIR$\..\src\bluetooth.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\calculate.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\..\..\..\Libraries\devices\src\counter.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\..\src\filter.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\main.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\..\src\motor.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\..\src\timer.c</name>
