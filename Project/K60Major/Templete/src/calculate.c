@@ -4,18 +4,15 @@
 
 #include "filter.h"
 
-#define GRAVITY_OFFSET          0
-#define GYROSCOPE_OFFSET        0
+#define GRAVITY_OFFSET          (-11549)
+#define GYROSCOPE_OFFSET        (-406)
 
 #define GYROSCOPE_RATIO   0.0078125 //128.0//0.0078125//128 (pow 2 7)
 #define GRAVITY_RATIO   0.000244//4096.0//0.000244//4096.0//* 0.000244
 
-#define SCOPE
-
-//float angle_balance, gyro_balance
 
 // Balance control
-float ANGLE_P = 1250;
+float ANGLE_P = 4500;
 float ANGLE_D = 0;
 // Speed control
 float SPEED_P = 0;
@@ -48,12 +45,6 @@ float AngleFilter(float angle, float gyro, int way)
         angle_balance =  Kalman_Filter(angle, gyro);
     else if (way == 2)
         angle_balance = Complementary_Filter(angle, gyro);
-    
-#ifdef SCOPE
-    scope_buf[0] = angle;
-    scope_buf[1] = gyro;
-    scope_buf[2] = angle_balance;
-#endif
     
     return angle_balance;
 }
