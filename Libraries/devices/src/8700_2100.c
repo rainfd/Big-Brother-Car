@@ -7,6 +7,8 @@
 /*
     模块平放 前后：pitch 左右：yaw
        竖放 前后：pitch 左右：roll
+    Turn = Gyro_y;
+    Balance = Gyro_x, accel_y
 */
 
 #define ALPHA_G 0.0078125
