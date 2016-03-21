@@ -13,95 +13,67 @@
 #include "filter.h"
 #include "timer.h"
 #include "motor.h"
+#include "bluetooth.h"
 
 #define LED_ON PEout(26) = 0
 #define LED_OFF PEout(26) = 1
 
 uint32_t uart_instance;
 
-
-int32_t i = 0;
-
-//#define COUNTER
-
-// Turn = Gyro_y;
-// Balance = Gyro_x, accel_y
-
-static void UART_RX_ISR(uint16_t byteReceived)
-{
-    //PWM_Out(byteReceived, 0, byteReceived, 0);
-    /* 将接收到的数据发送回去 */
-    UART_WriteByte(HW_UART4, byteReceived);
-}
+extern int left_pwm, right_pwm;
+extern float ANGLE_P;
+extern float ANGLE_D;
 
 int main(void)
 {   
     DelayInit();
 
-    GPIO_QuickInit(HW_GPIOE, 26, kGPIO_Mode_OPP);   
+    GPIO_QuickInit(HW_GPIOE, 26, kGPIO_Mode_OPP);
+    
+    LED_OFF;
 
-    uart_instance = UART_QuickInit(UART4_RX_PE25_TX_PE24, 115200);
-    /*  配置UART 中断配置 打开接收中断 安装中断回调函数 */
-    UART_CallbackRxInstall(HW_UART4, UART_RX_ISR);
-    /* 打开串口接收中断功能 IT 就是中断的意思*/
-    UART_ITDMAConfig(HW_UART4, kUART_IT_Rx, true);
-    
-    LCD_Init();
-    
-    LCD_Print(20, 0, "Big Brother");
-    
-//    LED_ON;  // 查看初始化时间
-//
-    LED_ON;   
-    
+    uart_instance = UARTB_Init(115200);
     GyroAccel_Init();
-    
     CounterInit();
     Timer_Init();
-    PWM_Init(0);
+    Motor_Init(0);
     PWM_Out(5000,0,5000,0);
+    LCD_Init();
+    LCD_Print(20, 0, "Big Brother"); 
     
     printf("Init OK");
 
-    
+    LED_ON;
     
     while(1)
     {
-        
-//        printf("[CH%d]:%4dHz [CH%d]:%4dHz\r\n", 0, ChlValue[0], 1, ChlValue[1]);
-//        DelayMs(200);
-
+// LCD 128*64 font:8*16
+#if 0   
+// Counter
         LCD_Print(0, 2, "L: ");
-        LCD_Print_Num(20, 2, ChlValue[0], 6);
-        LCD_Print(0, 4, "R: ");
-        LCD_Print_Num(20, 4, ChlValue[1], 6);
-        
-        //PWM_Out(5000, 0, 5000, 0);
-        
-        //DataScope(uart_instance, scope_buf);
-        
-#if 0
-    float gyroaccel[6];
-    
-    GyroAccel_Read(gyroaccel);
-        
-    scope_buf[0] = gyroaccel[0];
-    scope_buf[1] = gyroaccel[1];
-    scope_buf[2] = gyroaccel[2];
-    scope_buf[3] = gyroaccel[3];
-    scope_buf[4] = gyroaccel[4];
-    scope_buf[5] = gyroaccel[5];
- 
-//    scope_buf[6] = yi;
- 
-    scope_buf[7] = Kalman_Filter(gyroaccel[5], gyroaccel[1]);	
-    scope_buf[8] = Complementary_Filter(gyroaccel[5], gyroaccel[1]);
-    scope_buf[9] = Complementary_Filter2(gyroaccel[5], gyroaccel[1]);
-        
-    
-    DataScope(uart_instance, scope_buf);
-
+        LCD_Print_Num(20, 2, ChlValue[0], 4);
+        LCD_Print(64, 2, "R: ");
+        LCD_Print_Num(84, 2, ChlValue[1], 4);
+#elif 1
+// PID value
+        LCD_Print(0, 2, "P: ");
+        LCD_Print_Num(20, 2, (int)ANGLE_P, 4);
+        LCD_Print(64, 2, "D: ");
+        LCD_Print_Num(84, 2, (int)ANGLE_D, 4);
 #endif
+        
+        /* pwm取值整十， 负数最后一位加一 */
+        int l, r;
+        l = left_pwm/10;
+        r = right_pwm/10;
+
+        
+        LCD_Print(0, 4, "L: ");
+        LCD_Print_Num(20, 4, l, 4);
+        LCD_Print(64, 4, "R: ");
+        LCD_Print_Num(84, 4, r, 4);
+        
+        DataScope(uart_instance, scope_buf);
 
     }
 }
