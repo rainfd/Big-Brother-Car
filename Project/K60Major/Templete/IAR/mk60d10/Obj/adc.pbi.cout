@@ -1,38 +1,38 @@
-"E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\drivers\K\src\adc.c"
+"C:\Users\rainfd\Desktop\CH-K-Lib-master\Libraries\drivers\K\src\adc.c"
 -std=c99
 -ferror-limit=100
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\drivers\K\inc
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\drivers\K\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\startup\CoreSupport
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\startup\CoreSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport\IAR-ARM
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport\IAR-ARM
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\startup\DeviceSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\src
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\src
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\..\..\..\Libraries\devices\inc
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\..\..\..\Libraries\devices\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\IAR\..\inc
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\IAR\..\inc
 -I
 D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc
 -I
 D:\Program Files (x86)\IAR Systems\Embedded Workbench 7.0\arm\inc\c
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\drivers\K\inc
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Libraries\drivers\K\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\startup\CoreSupport
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Libraries\startup\CoreSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\startup\DeviceSupport\IAR-ARM
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Libraries\startup\DeviceSupport\IAR-ARM
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\startup\DeviceSupport
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Libraries\startup\DeviceSupport
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\src
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\src
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Libraries\devices\inc
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Libraries\devices\inc
 -I
-E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开发板-基础例程\Templete\inc
+C:\Users\rainfd\Desktop\CH-K-Lib-master\Project\K60Major\Templete\inc
 -DMK60D10=1
 -D__CHAR_BITS__=8
 -D__CHAR_MAX__=0xff
@@ -226,8 +226,8 @@ E:\_________________________Freescale\Big Brother\CH-K-Lib\Project\超核K60-K64开
 -D__HAS_LOCATED_DECLARATION__=1
 -D__HAS_LOCATED_WITH_INIT__=1
 -D__IAR_COMPILERBASE__=593924
--D__DATE__="Dec 14 2015"
--D__TIME__="14:16:29"
+-D__DATE__="Mar 21 2016"
+-D__TIME__="10:28:19"
 -D__STDC__=1
 -D__STDC_VERSION__=199901L
 -D__STDC_HOSTED__=1
