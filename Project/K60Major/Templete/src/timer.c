@@ -2,7 +2,6 @@
 
 #include "pit.h"
 #include "common.h"
-//#include "adc.h"
 
 #include "DataScope_DP.h"
 #include "8700_2100.h"
@@ -10,6 +9,9 @@
 #include "filter.h"
 #include "calculate.h"
 #include "counter.h"
+#include "motor.h"
+
+int left_pwm, right_pwm;
 
 void Timer_Init(void)
 {       
@@ -19,42 +21,11 @@ void Timer_Init(void)
     PIT_ITDMAConfig(HW_PIT_CH0, kPIT_IT_TOF, true); // 开启PIT0定时器中断
 }
 
-float xi = 0, yi = 0, zi = 0;
-
 void PIT_ISR(void)
 {
-
-    
-//    int16_t gyro_x = gyroaccel[0], gyro_y = gyroaccel[1], gyro_z =  gyroaccel[2],
-//            accel_x = gyroaccel[3], accel_y = gyroaccel[4], accel_z = gyroaccel[5];
-    
-    
-#if 0
-
-    float gyroaccel[6];
-    
-    GyroAccel_Read(gyroaccel);
-        
-    scope_buf[0] = gyroaccel[0];
-    scope_buf[1] = gyroaccel[1];
-    scope_buf[2] = gyroaccel[2];
-    scope_buf[3] = gyroaccel[3];
-    scope_buf[4] = gyroaccel[4];
-    scope_buf[5] = gyroaccel[5];
- 
-    scope_buf[6] = ChlValue[0];
-    scope_buf[7] = ChlValue[1];
-    
- 
-    scope_buf[8] = Kalman_Filter(gyroaccel[5], gyroaccel[1]);	
-    scope_buf[9] = Complementary_Filter(gyroaccel[5], gyroaccel[1]);
-//    scope_buf[9] = Complementary_Filter2(gyroaccel[5], gyroaccel[1]);
-    
-#elif 1
-
 // counter 
-    scope_buf[8] = ChlValue[0];
-    scope_buf[9] = ChlValue[1];
+    //scope_buf[8] = ChlValue[0];
+    //scope_buf[9] = ChlValue[1];
     
 // gyro accel
     int16_t raw[6];
@@ -73,32 +44,47 @@ void PIT_ISR(void)
     gyro = AngleCal(gyro_raw, 1);
     turn = AngleCal(turn_raw, 1);
     
+    //scope_buf[0] = angle_raw;
+    //scope_buf[1] = gyro_raw;
+    //scope_buf[2] = turn_raw;
+    
 
     /* 用原始数据直接滤波 */
-//    angle_balance = AngleFilter(angle_raw, gyro_raw, 1);
+    //angle_balance = AngleFilter(angle_raw, gyro_raw, 1);
     
     angle_balance = AngleFilter(angle, gyro, 2); // 1 Kalman 2 Complementary
     gyro_balance = gyro;
     
-    /* in calculate.c */
-    //    scope_buf[7] = angle_balance;
-    //    scope_buf[8] = gyro_balance;
-    //    scope_buf[9] = result;
-    
-//    static float integration = 0;
-//    
-//    integration = integration + 0.005 * gyro;
-//    
-//    scope_buf[6] = integration;
+    //scope_buf[3] = angle;
+    //scope_buf[4] = gyro;
+    //scope_buf[5] = angle_balance;
         
     
 // PID
-    int balance_pwm;
+    static int balance_pwm = 0, bp_for = 0;
+    
     
     balance_pwm = Balance_PID(angle_balance, gyro_balance);
     
-    scope_buf[3] = balance_pwm;
-
+    left_pwm = (balance_pwm + bp_for) / 2;
+    right_pwm = (balance_pwm + bp_for) / 2;
     
-#endif
+    bp_for = balance_pwm;
+    
+    Motor_Out(left_pwm, right_pwm);
+    
+    
+    //scope_buf[6] = balance_pwm;
+
+    scope_buf[0] = angle_raw;
+    scope_buf[1] = gyro_raw;
+    scope_buf[2] = turn_raw;
+    scope_buf[3] = angle;
+    scope_buf[4] = gyro;
+    scope_buf[5] = angle_balance;
+    scope_buf[6] = balance_pwm;
+    
+    scope_buf[8] = ChlValue[0];
+    scope_buf[9] = ChlValue[1];
+
 }
