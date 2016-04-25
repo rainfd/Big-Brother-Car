@@ -4,7 +4,7 @@
 #include "uart.h"
 #include "motor.h"
 
-#define SCOPE 0
+#define SCOPE 1
 
 void parameter(char data[], int len);
 
@@ -57,7 +57,7 @@ void parameter(char data[], int len)
 {
     if (len != 6) {
 #if SCOPE
-        printf("ERROR\n");
+        printf("\n\nERROR\n\n");
 #endif
         return;
     }

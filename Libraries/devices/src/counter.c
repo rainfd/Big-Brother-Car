@@ -83,7 +83,7 @@ void CounterInit(void)
 {
     /* 开启DMA捕捉引脚脉冲信号 (每个端口只能测量一路DMA 也就是说DMA脉冲最多只能测量5路(PTA,PTB,PTC,PTD,PTE))*/
     DMA_PulseCountInit(HW_DMA_CH0, HW_GPIOC, 0);
-    DMA_PulseCountInit(HW_DMA_CH1, HW_GPIOB, 22);
+    DMA_PulseCountInit(HW_DMA_CH1, HW_GPIOB, 2);
     
     /* 开启一个PIT中断用于显示收到的计数 */
     PIT_QuickInit(HW_PIT_CH3, 100 * 1000);

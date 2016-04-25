@@ -13,7 +13,7 @@ float R_angle = 0.5;          // 测量噪声的协方差 （测量偏差)
 
 const float dt = 0.005;             //  采样周期 5ms
 
-float angle, angle_dot;      // Kalman
+float angle_k, angle_dot;      // Kalman
 float angle_com, angle_com2;             // Complementary
 
 float x1, x2, y1;
@@ -28,7 +28,7 @@ float PP[2][2] = { { 1, 0 },{ 0, 1 } };
 
 float Kalman_Filter(float Accel,float Gyro)		
 {   
-	angle += (Gyro - Q_bias) * dt;              // 先验估计
+	angle_k += (Gyro - Q_bias) * dt;              // 先验估计
 	Pdot[0] = Q_angle - PP[0][1] - PP[1][0];    // Pk 先验估计误差协方差的微分
 
 	Pdot[1] = -PP[1][1];
@@ -39,7 +39,7 @@ float Kalman_Filter(float Accel,float Gyro)
 	PP[1][0] += Pdot[2] * dt;
 	PP[1][1] += Pdot[3] * dt;
 		
-	Angle_err = Accel - angle;	                // Zk 先验估计
+	Angle_err = Accel - angle_k;	                // Zk 先验估计
 	
 	PCt_0 = C_0 * PP[0][0];
 	PCt_1 = C_0 * PP[1][0];
@@ -57,11 +57,11 @@ float Kalman_Filter(float Accel,float Gyro)
 	PP[1][0] -= K_1 * t_0;
 	PP[1][1] -= K_1 * t_1;
 		
-	angle += K_0 * Angle_err;	                // 后验估计
+	angle_k += K_0 * Angle_err;	                // 后验估计
 	Q_bias += K_1 * Angle_err;	                // 后验估计
 	angle_dot = Gyro - Q_bias;	                // 输出值(后验估计)的微分=角速度
     
-    return angle;
+    return angle_k;
 }
 
 // 一阶互补滤波

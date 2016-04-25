@@ -2,8 +2,12 @@
 #define _8700_2100_H
 
 #define Fxas21oo              0x20
+#define CTRL_REG0_2100        0x0d
 #define CTRL_REG1_2100        0x13
+
 #define Fxod8700              0x1e
+#define XYZ_DATA_CFG          0x0e
+#define CTRL_REG2_8700        0x2B
 #define CTRL_REG1_8700        0x2a
 
 #define OUT_X_MSB_REG         0x01
@@ -44,9 +48,11 @@
 
 //uint32_t instance;
 
+void I2CData_Read(uint8_t chipAddr, int16_t *data, int bit);
 void GyroAccel_Init(void);
 void GyroAccel_Raw(int16_t *data);
 void GyroAccel_Read(float *data);
+float AngleCal(int raw, int way);
 
 //Data GyroAccel_Pro(void);
 

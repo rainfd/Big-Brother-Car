@@ -15,26 +15,55 @@
 #define ALPHA_A 0.000244
 #define PI      3.141592
 
+#define GYROSCOPE_RATIO   0.0078125 //128.0//0.0078125//128 (pow 2 7)
+#define GRAVITY_RATIO   0.244/1000//0.000244//4096.0//0.000244//4096.0//* 0.000244
+#define SENSITIVITY_2G  (4096.0)
+#define SENSITIVITY_250 (128.0)
 
+int GYROSCOPE_OFFSET        = -855;//(-401)
+int GRAVITY_OFFSET          = 3780;//(14233)
+int TURN_OFFSET             = 0;
 
 uint32_t instance;
 
 void GyroAccel_Init(void)
 {
-//    uint32_t instance;
-    
+    //uint32_t instance;
     instance = I2C_QuickInit(I2C1_SCL_PE01_SDA_PE00,1000);
     
     // gyro 2100
-//    I2C_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t data);
-    I2C_WriteSingleRegister(instance, Fxas21oo, 0x0d, 0x02); // 250 7.8125
-    I2C_WriteSingleRegister(instance, Fxas21oo, CTRL_REG1_2100, 0x02); // active
-    
+    // I2C_WriteSingleRegister(uint32_t instance, uint8_t chipAddr, uint8_t addr, uint8_t data);
+    I2C_WriteSingleRegister(instance, Fxas21oo, CTRL_REG0_2100, 0x03);  // High-pass filter disabled, +/-250 dps range -> 7.8125 mdps/LSB = 128 LSB/dps 
+    I2C_WriteSingleRegister(instance, Fxas21oo, CTRL_REG1_2100, 0x16);  // ODR = 25Hz, Active mode
     // accel 8700
-    I2C_WriteSingleRegister(instance, Fxod8700, CTRL_REG1_8700, 0x05); // active
+    I2C_WriteSingleRegister(instance, Fxod8700, XYZ_DATA_CFG, 0x0);     // 0.244mg/LSB +2g
+    I2C_WriteSingleRegister(instance, Fxod8700, CTRL_REG2_8700, 0x02);  // High Resolution mode
+    I2C_WriteSingleRegister(instance, Fxod8700, CTRL_REG1_8700, 0x25);  // ODR = 25Hz, Reduced noise, Active mode  
+    
+// OFFSET auto
+    /*
+    int16_t gyro[3], accel[3];
+    int data[6] = {0};
+    int i = 0;
+    for (i = 0; i < 20; i++) {
+        I2CData_Read(Fxas21oo, gyro, 16);
+        I2CData_Read(Fxod8700, accel, 14);
+        
+        data[0] += gyro[0];  // turn
+        data[1] += gyro[1];  // gyro
+        //data[2] += gyro[2];
+        //data[3] += accel[0];
+        //data[4] += accel[1];
+        data[5] += accel[2]; // angle
+    }
+    
+    TURN_OFFSET = data[0] / 20;
+    GYROSCOPE_OFFSET = data[1] / 20;
+    GRAVITY_OFFSET = data[5] / 20;
+    */
 }
 
-void I2CData_Read(uint8_t chipAddr, int16_t *data)
+void I2CData_Read(uint8_t chipAddr, int16_t *data, int bit)
 {
 
     uint8_t raw[6];
@@ -45,14 +74,24 @@ void I2CData_Read(uint8_t chipAddr, int16_t *data)
     data[1] = (raw[2]<<8) | raw[3];
     data[2] = (raw[4]<<8) | raw[5];
     
+    if (bit == 14) {
+        data[0] = data[0] >> 2;
+        data[1] = data[1] >> 2;
+        data[2] = data[2] >> 2;
+    } else if (bit == 14) {
+    
+    }
+    else {
+       return;
+    }
 }
 
 void GyroAccel_Raw(int16_t *data)
 {
     int16_t gyro[3], accel[3];
     
-    I2CData_Read(Fxas21oo, gyro);
-    I2CData_Read(Fxod8700, accel);
+    I2CData_Read(Fxas21oo, gyro, 16);
+    I2CData_Read(Fxod8700, accel, 14);
     
     // gyro[0] x gyro[1] y gyro[2] z
     // accel[0] x accel[1] y accel[2] z
@@ -70,77 +109,37 @@ void GyroAccel_Read(float *data)
     
     GyroAccel_Raw(raw);
     
-    data[0] = raw[0] * ALPHA_G;
-    data[1] = raw[1] * ALPHA_G;
-    data[2] = raw[2] * ALPHA_G;
+//    data[0] = raw[0] / SENSITIVITY_250;
+//    data[1] = raw[1] / SENSITIVITY_250;
+//    data[2] = raw[2] / SENSITIVITY_250;
+//    
+//    data[3] = raw[3] / SENSITIVITY_2G;
+//    data[4] = raw[4] / SENSITIVITY_2G;
+//    data[5] = raw[5] / SENSITIVITY_2G; 
     
-    data[3] = raw[3] * ALPHA_A;
-    data[4] = raw[4] * ALPHA_A;
-    data[5] = raw[5] * ALPHA_A;
-    
+//    data[0] = raw[5];
+//    data[1] = raw[1];
+//    data[2] = raw[0];
+
+    data[0] = (raw[5] - GRAVITY_OFFSET) / SENSITIVITY_2G;
+    data[1] = (raw[1] - GYROSCOPE_OFFSET) / SENSITIVITY_250;
+    data[2] = (raw[0] - 0) / SENSITIVITY_250;
+
 }
 
-//GyroAccel GyroAccel_Filter(const int16_t *gyro, const int16_t *accel)
-//{
-//    GyroAccel dps;
-//    
-//    dps.gyro_x = gyro[0] * ALPHA_G;
-//    dps.gyro_y = gyro[1] * ALPHA_G;
-//    dps.gyro_z = gyro[2] * ALPHA_G;
-//    
-//    dps.accel_x = accel[0] * ALPHA_A;
-//    dps.accel_y = accel[1] * ALPHA_A;
-//    dps.accel_z = accel[2] * ALPHA_A;
-//    
-//    return dps;
-//}
 
-//Rotation Accel_Cal(const GyroAccel raw)
-//{
-//    double x, y, z;
-//    Rotation dps;
-//    
-//    x = raw.accel_x;
-//    y = raw.accel_y;
-//    z = raw.accel_z;
-//    
-//    dps.pitch = (atan2(x, sqrt(y*y + z*z)) * 180.0) / PI;
-//    dps.roll = (atan2(y, sqrt(x*x + z*z)) * 180.0) / PI;
-//    dps.yaw = (atan2(z, sqrt(x*x + y*y)) * 180.0) / PI;
-//                
-//    
-//    return dps;
-//}
-
-//Fxas21oo
-//Fxod8700
-/*
-Data GyroAccel_Pro(void)
-{   
-    int16_t gyro[3], accel[3];
-    GyroAccel dps;
-    Rotation data;
-    Data fin;
+float AngleCal(int raw, int way)
+{
+    float result;
     
-//    GyroAccel_Init();
+    /* 1 accel 2 gyro 3 turn*/
+    if (way == 1)
+        result = (raw - GRAVITY_OFFSET) / SENSITIVITY_2G; 
+    else if (way == 2)
+        result = (raw - GYROSCOPE_OFFSET) / SENSITIVITY_250;
+    else if (way == 3)
+        result = (raw - TURN_OFFSET) / SENSITIVITY_250;
     
-    GyroAccel_Read(Fxas21oo, gyro);
-    GyroAccel_Read(Fxod8700, accel);
-       
-    dps = GyroAccel_Data(gyro, accel);
-    data = Accel_Cal(dps);
     
-    fin.gyro_x = dps.gyro_x;
-    fin.gyro_y = dps.gyro_y;
-    fin.gyro_z = dps.gyro_z;
-    fin.accel_x = dps.accel_x;
-    fin.accel_y = dps.accel_y;
-    fin.accel_z = dps.accel_z;
-    fin.pitch = data.pitch;
-    fin.roll = data.roll;
-    fin.yaw = data.yaw;
-    
-    return fin;
-//    printf("x:%f y:%f z:%f pitch:%f roll:%f yaw:%f", dps.gyro_x, dps.gyro_y, dps.gyro_z, data.pitch, data.roll, data.yaw);
+    return result;
 }
-*/
